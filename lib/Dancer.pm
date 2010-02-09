@@ -24,6 +24,7 @@ use base 'Exporter';
 $AUTHORITY = 'SUKRIA';
 $VERSION   = '1.130';
 @EXPORT    = qw(
+  after
   any
   before
   cookies
@@ -51,6 +52,7 @@ $VERSION   = '1.130';
   r
   redirect
   request
+  response
   send_file
   send_error
   set
@@ -67,6 +69,7 @@ $VERSION   = '1.130';
 
 # Dancer's syntax
 
+sub after        { Dancer::Route->after_filter(@_) }
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
 sub cookies      { Dancer::Cookies->cookies }
@@ -98,6 +101,7 @@ sub put        { Dancer::Route->add('put', @_) }
 sub r          { {regexp => $_[0]} }
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
+sub response   { Dancer::Response->current }
 sub send_file  { Dancer::Helpers::send_file(@_) }
 sub set        { setting(@_) }
 sub set_cookie { Dancer::Helpers::set_cookie(@_) }

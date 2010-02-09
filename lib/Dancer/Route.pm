@@ -72,7 +72,7 @@ sub add_any {
 }
 
 # helpers needed by the auto_reload feature
-sub init_registry { {routes => {}, before_filters => []} }
+sub init_registry { {routes => {}, before_filters => [], after_filters => []} }
 sub purge_all    { $REG = init_registry() }
 sub registry     {$REG}
 sub set_registry { $REG = $_[1] }
@@ -125,10 +125,13 @@ sub merge_registry {
 
     # NOTE: we have to warn the user about mixing before_filters in different
     # files, that's not supported. Only the last before_filters block is used.
-    $merged_reg->{before_filters} =
-      (scalar(@{$new_reg->{before_filters}}) > 0)
-      ? $new_reg->{before_filters}
-      : $orig_reg->{before_filters};
+    for my $prefilter (qw/before after/) {
+		my $filter = $prefilter . '_filters';
+		$merged_reg->{$filter} =
+			(scalar(@{$new_reg->{$filter}}) > 0)
+	      ? $new_reg->{$filter}
+	      : $orig_reg->{$filter};
+	}
 
     Dancer::Route->set_registry($merged_reg);
 }
@@ -175,12 +178,22 @@ sub find {
     return $first_match;
 }
 
+sub after_filter {
+	my($class, $filter) = @_;
+	my $registry = Dancer::Route->registry;
+	$registry->{after_filters} ||= [];
+	push @{$registry->{after_filters}}, $filter;
+}
+
 sub before_filter {
     my ($class, $filter) = @_;
     my $registry = Dancer::Route->registry;
     $registry->{before_filters} ||= [];
     push @{$registry->{before_filters}}, $filter;
 }
+
+sub after_filters { @{$REG->{after_filters}} }
+sub run_after_filters { $_->() for after_filters }
 
 sub before_filters { @{$REG->{before_filters}} }
 sub run_before_filters { $_->() for before_filters }

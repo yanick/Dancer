@@ -56,6 +56,8 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
+    # is this the best place to do this?
+    Dancer::Route->run_after_filters();
     Dancer::SharedData->reset_all();
     return $self->render_response($response);
 }
