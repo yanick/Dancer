@@ -82,6 +82,10 @@ sub html_page {
 
 sub get_action_response {
     my $request = Dancer::SharedData->request;
+
+    # run the before filters
+    Dancer::Plugin->run_hook('before_dispatch', $request);
+    
     my $path    = $request->path_info;
     my $method  = $request->method;
     my $handler = Dancer::Route->find($path, $method, $request);
@@ -90,7 +94,8 @@ sub get_action_response {
     Dancer::Route->build_params($handler, $request);
     Dancer::SharedData->request($request);
 
-    # run the before filters
+    # XXX what should we do ? keep before here ? or merge with
+    # before_dispatch hooks ?
     Dancer::Route->run_before_filters;
 
     # recurse if something has changed
@@ -111,7 +116,7 @@ sub get_action_response {
         $response = Dancer::Route->call($handler);
         Dancer::Logger->core("route: ".$handler->{route});
     }
-    
+
     # serializing the response if needed
     $response = Dancer::Serializer->process_response($response)
         if setting('serializer') && $response->{content};

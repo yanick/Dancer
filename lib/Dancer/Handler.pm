@@ -63,6 +63,7 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
+    Dancer::Plugins->run_hook('after_dispatch', $response);
     return $self->render_response($response);
 }
 
