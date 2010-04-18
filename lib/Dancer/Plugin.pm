@@ -11,16 +11,35 @@ use vars qw(@EXPORT);
     register
     register_plugin
     plugin_setting
+    add_handler
 );
 
 my @_reserved_keywords = @Dancer::EXPORT;
 
 my $_keywords = [];
 
+my $_hooks = {};
+
+sub add_handler {
+    my ($hook_position, $code) = @_;
+    if (ref $code ne 'CODE') {
+        die "this is not a code ref";
+    }
+    push @{$_hooks->{$hook_position}}, $code;
+}
+
+sub run_hook {
+    my $class         = shift;
+    my $hook_position = shift;
+    foreach my $h ( @{ $_hooks->{$hook_position} } ) {
+        $h->(@_);
+    }
+}
+
 sub plugin_setting {
     my $plugin_orig_name = caller();
     my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
-    
+
     my $settings = setting('plugins');
 
     foreach ($plugin_name, $plugin_orig_name) {
@@ -33,6 +52,9 @@ sub plugin_setting {
 
 sub register($$) {
     my ($keyword, $code) = @_;
+    if (ref $code ne 'CODE') {
+        die "this is not a coderef";
+    }
     if (grep {$_ eq $keyword} @_reserved_keywords) {
         die "You can't use $keyword, this is a reserved keyword";
     }
@@ -91,6 +113,20 @@ You can extend Dancer by writing your own Plugin.
 =head2 METHODS
 
 =over 4
+
+=item B<add_handler>
+
+The following event are supported :
+
+=over 4
+
+=item before_dispatch
+
+=item before_template
+
+=item after_dispatch
+
+=back
 
 =item B<register>
 
