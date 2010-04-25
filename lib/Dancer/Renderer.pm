@@ -15,6 +15,7 @@ use Dancer::FileUtils qw(path dirname read_file_content);
 use Dancer::SharedData;
 use Dancer::Logger;
 use MIME::Types;
+use Dancer::Plugin;
 
 sub render_file {
     return get_file_response();
@@ -85,7 +86,7 @@ sub get_action_response {
 
     # run the before filters
     Dancer::Plugin->run_hook('before_dispatch', $request);
-    
+
     my $path    = $request->path_info;
     my $method  = $request->method;
     my $handler = Dancer::Route->find($path, $method, $request);

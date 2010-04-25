@@ -12,6 +12,7 @@ use vars qw(@EXPORT);
     register_plugin
     plugin_setting
     add_hook
+    run_hook
 );
 
 my @_reserved_keywords = @Dancer::EXPORT;

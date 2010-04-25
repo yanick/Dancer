@@ -8,6 +8,7 @@ use Dancer::GetOpt;
 use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
+use Dancer::Plugin;
 
 # supported application handlers
 use Dancer::Handler::PSGI;
@@ -63,7 +64,7 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
-    Dancer::Plugins->run_hook('after_dispatch', $response);
+    Dancer::Plugin->run_hook('after_dispatch', $response);
     return $self->render_response($response);
 }
 
