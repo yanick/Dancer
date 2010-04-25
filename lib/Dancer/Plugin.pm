@@ -11,7 +11,7 @@ use vars qw(@EXPORT);
     register
     register_plugin
     plugin_setting
-    add_handler
+    add_hook
 );
 
 my @_reserved_keywords = @Dancer::EXPORT;
@@ -20,7 +20,7 @@ my $_keywords = [];
 
 my $_hooks = {};
 
-sub add_handler {
+sub add_hook {
     my ($hook_position, $code) = @_;
     if (ref $code ne 'CODE') {
         die "this is not a code ref";
@@ -114,7 +114,7 @@ You can extend Dancer by writing your own Plugin.
 
 =over 4
 
-=item B<add_handler>
+=item B<add_hook>
 
 The following event are supported :
 
