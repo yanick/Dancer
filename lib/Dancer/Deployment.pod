@@ -163,6 +163,11 @@ You can use Lighttp's mod_proxy:
 
 This configuration will proxy all request to the B</application> path to the path B</> on localhost:3000.
 
+=head2 Running from Apache
+
+You can run your Dancer app from Apache using the following examples:
+
+
 =head3 Running from Apache with Plack
 
 You can run your app from Apache using PSGI (Plack), with a config like the

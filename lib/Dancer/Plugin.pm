@@ -43,7 +43,9 @@ sub plugin_setting {
 
     my $settings = setting('plugins');
 
-    foreach ($plugin_name, $plugin_orig_name) {
+    foreach (   $plugin_name,    $plugin_orig_name,
+             lc $plugin_name, lc $plugin_orig_name) 
+    {
         return $settings->{$_}
             if ( exists $settings->{$_} );
     }
@@ -59,7 +61,7 @@ sub register($$) {
     if (grep {$_ eq $keyword} @_reserved_keywords) {
         die "You can't use $keyword, this is a reserved keyword";
     }
-    push @$_keywords, {$keyword => $code};
+    push @$_keywords, [$keyword => $code];
 }
 
 sub register_plugin {
@@ -67,7 +69,7 @@ sub register_plugin {
     my ($application) = caller(1);
 
     for my $keyword (@$_keywords) {
-        my ($name, $code) = each (%$keyword);
+        my ($name, $code) = @$keyword;
         {
             no strict 'refs';
             *{"${application}::${name}"} = $code;
