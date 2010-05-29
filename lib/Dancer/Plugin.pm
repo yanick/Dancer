@@ -21,10 +21,15 @@ my $_keywords = [];
 
 my $_hooks = {};
 
+my @_allowed_hooks = (qw/before_dispatch before_template after_dispatch/);
+
 sub add_hook {
     my ($hook_position, $code) = @_;
     if (ref $code ne 'CODE') {
-        die "this is not a code ref";
+        die "this hook is not a code ref";
+    }
+    if (!grep { $hook_position eq $_ } @_allowed_hooks) {
+        die "unrecognized hook position: $hook_position";
     }
     push @{$_hooks->{$hook_position}}, $code;
 }
@@ -44,14 +49,13 @@ sub plugin_setting {
     my $settings = setting('plugins');
 
     foreach (   $plugin_name,    $plugin_orig_name,
-             lc $plugin_name, lc $plugin_orig_name) 
+             lc $plugin_name, lc $plugin_orig_name)
     {
         return $settings->{$_}
             if ( exists $settings->{$_} );
     }
     return undef;
 }
-
 
 sub register($$) {
     my ($keyword, $code) = @_;
@@ -123,13 +127,15 @@ The following event are supported :
 
 =over 4
 
-=item before_dispatch
+=item before_dispatch <($request)>
 
-=item before_template
+=item before_template <>
 
-=item after_dispatch
+=item after_dispatch <($response)>
 
 =back
+
+Multiples hooks can be declared. They are executed in order of declaration.
 
 =item B<register>
 
