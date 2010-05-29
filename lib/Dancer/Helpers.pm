@@ -54,7 +54,7 @@ sub template {
         $tokens->{session} = Dancer::Session->get;
     }
 
-    Dancer::Plugin->run_hook('before_template', $view, $tokens);
+    Dancer::Plugin->run_hook('before_template', $tokens);
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
 
