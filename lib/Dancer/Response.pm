@@ -19,6 +19,7 @@ sub new {
         headers => $headers,
         content => "",
         pass    => 0,
+        forward => "",
         %args,
     };
     bless $self, $class;
@@ -43,6 +44,7 @@ sub set { $CURRENT = shift; }
 sub status { $CURRENT->{status} = Dancer::HTTP->status(shift) }
 sub content_type { $CURRENT->header('Content-Type' => shift) }
 sub pass { $CURRENT->{pass} = 1 }
+sub forward { $CURRENT->{forward} = $_[1] }
 
 sub halt {
     my ($class, $content) = @_;

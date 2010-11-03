@@ -1,3 +1,6 @@
+    [ Sawyer X ]
+    * Added forward() functionality (incl. tests and docs)
+
 Dancer 1.1999_03 (RC3)
     [Alexis Sukrieh]
     * Transparent unicode support
