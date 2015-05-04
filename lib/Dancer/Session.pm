@@ -26,13 +26,13 @@ sub get_current_session {
     shift;
     my %p       = @_;
     my $sid     = engine->read_session_id;
-    my $session = Dancer::SharedData->session;
+    my $session = $sid ? Dancer::SharedData->session($sid) : undef;
     my $class   = ref(engine);
 
     unless ( $session ) {
         $session = $class->retrieve($sid) if $sid;
         $session ||= $class->create;
-        Dancer::SharedData->session($session);
+        Dancer::SharedData->session($session->id => $session);
     }
 
     # Generate a session cookie; we want to do this regardless of whether the

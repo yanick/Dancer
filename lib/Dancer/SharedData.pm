@@ -15,13 +15,14 @@ Dancer::Factory::Hook->instance->install_hooks(
 my $vars = {};
 sub vars {$vars}
 
-my $session = undef;
+# $session is an hash of the form $sid => the_session
+my $session = {};
 sub session { 
     my $class = shift;
 
-    $session = shift if @_;
+    $session->{$_[0]} = $_[1] if @_ == 2;
 
-    return $session;
+    return $session->{$_[0]};
 };
 
 sub var {
@@ -64,7 +65,7 @@ sub reset_all {
 
     if (!$is_forward) {
         $vars = {};
-        $session = undef;
+        $session = {};
     }
     undef $_request;
     undef $_headers;
